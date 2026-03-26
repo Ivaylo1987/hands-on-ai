@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Complete Guide to Building Skills for Claude</title>
+<meta name="description" content="A 7-chapter interactive guide to building custom skills for Claude — from zero to production. Covers structure, writing, patterns, testing, and distribution.">
+<meta name="author" content="Ivaylo Hristov">
+<link rel="canonical" href="https://ivaylo1987.github.io/ai-coding/guides/skills/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Complete Guide to Building Skills for Claude">
+<meta property="og:description" content="A 7-chapter interactive guide to building custom skills for Claude — from zero to production.">
+<meta property="og:url" content="https://ivaylo1987.github.io/ai-coding/guides/skills/">
+<meta property="og:image" content="https://ivaylo1987.github.io/ai-coding/guides/skills/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="AI Learning Guides">
+
+<!-- Twitter/X Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Complete Guide to Building Skills for Claude">
+<meta name="twitter:description" content="A 7-chapter interactive guide to building custom skills for Claude — from zero to production.">
+<meta name="twitter:image" content="https://ivaylo1987.github.io/ai-coding/guides/skills/og-image.png">
+
+<!-- Favicon -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAFAF8;--bg2:#F2F1EE;--bg3:#E8E6E1;--bg4:#DDDBD5;
+  --text:#1A1A18;--t2:#4A4A45;--t3:#8A8A82;--t4:#B5B5AD;
+  --accent:#C25B28;--accent2:#A84B1F;--accent-bg:#C25B2810;
+  --teal:#1A7A5C;--teal-bg:#1A7A5C10;
+  --purple:#6B4FA0;--purple-bg:#6B4FA010;
+  --blue:#2B6CB0;--blue-bg:#2B6CB010;
+  --amber:#B07D1A;--amber-bg:#B07D1A10;
+  --green:#3A7A2A;--green-bg:#3A7A2A10;
+  --coral:#C25040;--coral-bg:#C2504010;
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'Source Sans 3',-apple-system,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:17px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+::selection{background:var(--accent);color:#fff}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--t4);border-radius:3px}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:#FAFAF8ee;backdrop-filter:blur(16px);border-bottom:1px solid #00000010;padding:0 2rem;height:52px;display:flex;align-items:center;justify-content:space-between;transition:transform .3s}
+.nav.hide{transform:translateY(-100%)}
+.nav-logo{font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);font-weight:600}
+.nav-links{display:flex;gap:1.8rem}
+.nav-links a{font-size:13px;color:var(--t3);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--accent)}
+.nav-prog{position:fixed;bottom:0;left:0;height:4px;background:var(--accent);width:0;transition:width .15s;z-index:200}
+@media(max-width:900px){.nav-links{display:none}}
+
+/* HERO */
+.hero{min-height:90vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:7rem 2rem 5rem;position:relative}
+.hero-step{font-family:var(--mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem}
+.hero h1{font-family:var(--serif);font-size:clamp(2.8rem,6vw,4.6rem);font-weight:400;line-height:1.15;max-width:780px;color:var(--text)}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero-sub{font-size:1.15rem;color:var(--t2);max-width:540px;margin-top:1.5rem;line-height:1.9}
+.hero-cta{margin-top:2.5rem;display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:8px;font-size:15px;font-weight:500;text-decoration:none;cursor:pointer;border:none;transition:all .2s;font-family:var(--sans)}
+.btn-p{background:var(--accent);color:#fff}.btn-p:hover{background:var(--accent2);transform:translateY(-1px);text-decoration:none}
+.btn-s{background:transparent;color:var(--text);border:1.5px solid var(--bg3)}.btn-s:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+
+/* JOURNEY STRIP */
+.journey{display:flex;align-items:center;justify-content:center;gap:0;padding:2rem;flex-wrap:wrap;max-width:900px;margin:0 auto}
+.journey-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:600;color:#fff;flex-shrink:0}
+.journey-line{width:40px;height:2px;background:var(--bg3);flex-shrink:0}
+@media(max-width:640px){.journey-line{width:20px}}
+
+/* SECTIONS */
+.S{max-width:960px;margin:0 auto;padding:5rem 2rem}
+.S-label{font-family:var(--mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem;font-weight:500}
+.S h2{font-family:var(--serif);font-size:clamp(1.9rem,3.5vw,2.6rem);font-weight:400;line-height:1.2;margin-bottom:.6rem}
+.S h2 em{font-style:italic;color:var(--accent)}
+.S-desc{font-size:1.05rem;color:var(--t2);max-width:620px;margin-bottom:1.5rem;line-height:1.9}
+.wyl{display:flex;align-items:flex-start;gap:12px;padding:16px 20px;border-radius:10px;background:var(--accent-bg);border-left:3px solid var(--accent);margin-bottom:2.5rem;font-size:14px;color:var(--t2);line-height:1.8}
+.wyl-icon{font-size:16px;flex-shrink:0;margin-top:2px}
+.ch-from{font-size:14px;color:var(--t3);font-style:italic;margin-bottom:1rem;padding-left:2px}
+h3.sub{font-size:1.2rem;font-weight:600;margin:2.5rem 0 .8rem}
+h4.sub{font-size:1.05rem;font-weight:600;margin:1.8rem 0 .6rem}
+.prose{font-size:15px;color:var(--t2);line-height:1.9;max-width:700px;margin-bottom:1.2rem}
+.divider{height:1px;background:var(--bg3);max-width:960px;margin:0 auto}
+
+/* CODE */
+.cdb{background:#fff;border:1.5px solid var(--bg3);border-radius:10px;overflow:hidden;margin:1.2rem 0}
+.cdh{padding:8px 14px;background:var(--bg2);display:flex;justify-content:space-between;align-items:center;border-bottom:1.5px solid var(--bg3)}
+.cdl{font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;font-weight:600}
+.cdc{font-family:var(--mono);font-size:10px;color:var(--t3);cursor:pointer;background:none;border:1px solid var(--bg3);padding:3px 10px;border-radius:5px;transition:all .2s}
+.cdc:hover{color:var(--accent);border-color:var(--accent)}
+pre.cb{padding:18px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.8;color:var(--t2);white-space:pre;margin:0;background:#fff}
+.ck{color:var(--purple)}.cs{color:var(--teal)}.cv{color:var(--coral)}.cc{color:var(--t3)}.ca{color:var(--accent)}
+code{font-family:var(--mono);font-size:13px;background:var(--bg2);padding:2px 8px;border-radius:4px;color:var(--teal)}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem}
+@media(max-width:640px){.g2{grid-template-columns:1fr}}
+
+/* CARDS */
+.card{background:#fff;border:1.5px solid var(--bg3);border-radius:10px;padding:22px;transition:all .2s}
+.card:hover{border-color:var(--t4)}
+
+/* COMPARE */
+.cmp{border-radius:10px;padding:18px 20px;border:1.5px solid var(--bg3)}
+.cmp.good{background:var(--green-bg);border-color:#3A7A2A30}
+.cmp.bad{background:var(--coral-bg);border-color:#C2504030}
+.cml{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;font-weight:600}
+.cmp.good .cml{color:var(--green)}.cmp.bad .cml{color:var(--coral)}
+.cmb{font-size:14px;color:var(--t2);line-height:1.8}
+
+/* TABLE */
+.mt{width:100%;border-collapse:collapse;margin:1.2rem 0;font-size:14px}
+.mt th{text-align:left;padding:10px 14px;background:var(--bg2);color:var(--text);font-weight:600;border-bottom:1.5px solid var(--bg3)}
+.mt td{padding:10px 14px;border-bottom:1px solid var(--bg3);color:var(--t2)}
+
+/* TIPS */
+.tip{padding:16px 20px;border-radius:10px;margin:1.2rem 0;font-size:14px;line-height:1.8;display:flex;align-items:flex-start;gap:12px}
+.tip-i{font-size:16px;flex-shrink:0;margin-top:2px}
+.tip-w{background:var(--amber-bg);border:1.5px solid #B07D1A20;color:var(--t2)}
+.tip-f{background:var(--blue-bg);border:1.5px solid #2B6CB020;color:var(--t2)}
+.tip-s{background:var(--green-bg);border:1.5px solid #3A7A2A20;color:var(--t2)}
+.tip-a{background:var(--accent-bg);border:1.5px solid #C25B2820;color:var(--t2)}
+
+/* FOLDER */
+.fe{background:#fff;border:1.5px solid var(--bg3);border-radius:10px;overflow:hidden}
+.feh{padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1.5px solid var(--bg3);background:var(--bg2)}
+.fd{width:9px;height:9px;border-radius:50%}.fd.r{background:var(--coral)}.fd.y{background:var(--amber)}.fd.g{background:var(--teal)}
+.ft{font-family:var(--mono);font-size:12px;color:var(--t2);margin-left:6px}
+.fi{display:flex;align-items:center;gap:10px;padding:12px 20px;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--bg3);font-size:14px}
+.fi:hover{background:var(--bg2)}.fi.active{background:var(--accent-bg);border-left:3px solid var(--accent)}
+.fn{font-family:var(--mono);font-size:13px;color:var(--text)}.fm{margin-left:auto}
+.fdp{background:var(--bg2);padding:16px 20px;border-top:1.5px solid var(--bg3);font-size:14px;color:var(--t2);line-height:1.8;min-height:60px}
+.tag{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:5px;font-weight:500}
+.tg-r{background:var(--coral-bg);color:var(--coral)}.tg-o{background:var(--teal-bg);color:var(--teal)}
+
+/* PROGRESSIVE DISCLOSURE */
+.dl{display:flex;align-items:stretch;gap:0;cursor:pointer;transition:all .3s;margin-bottom:8px}
+.dlb{width:4px;border-radius:2px;flex-shrink:0}
+.dlc{flex:1;padding:16px 20px;margin-left:16px;border:1.5px solid var(--bg3);border-radius:10px;transition:all .3s;background:#fff}
+.dl:hover .dlc{border-color:var(--t4)}
+.dl.active .dlc{border-color:var(--accent);background:var(--accent-bg)}
+.dln{font-family:var(--serif);font-size:1.6rem;color:var(--t4);margin-right:14px;line-height:1}
+.dl.active .dln{color:var(--accent)}
+.dlt{font-weight:600;font-size:1rem}.dls{font-size:13px;color:var(--t3)}
+.dld{max-height:0;overflow:hidden;transition:max-height .4s ease,margin .3s;font-size:14px;color:var(--t2);line-height:1.8}
+.dl.active .dld{max-height:300px;margin-top:10px}
+.dl:nth-child(1) .dlb{background:var(--accent)}.dl:nth-child(2) .dlb{background:var(--teal)}.dl:nth-child(3) .dlb{background:var(--purple)}
+
+/* CATEGORY CARDS */
+.cc-card{background:#fff;border:1.5px solid var(--bg3);border-radius:10px;padding:22px;position:relative;overflow:hidden}
+.cc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.cc-card:nth-child(1)::before{background:var(--accent)}.cc-card:nth-child(2)::before{background:var(--teal)}.cc-card:nth-child(3)::before{background:var(--purple)}
+.ccb{font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;display:inline-block;padding:2px 8px;border-radius:5px;font-weight:600}
+.cc-card:nth-child(1) .ccb{background:var(--accent-bg);color:var(--accent)}.cc-card:nth-child(2) .ccb{background:var(--teal-bg);color:var(--teal)}.cc-card:nth-child(3) .ccb{background:var(--purple-bg);color:var(--purple)}
+.cc-card h3{font-size:1.1rem;font-weight:600;margin-bottom:4px}.cc-card p{font-size:14px;color:var(--t2);line-height:1.8}
+.cex{margin-top:12px;padding:12px 14px;background:var(--bg2);border-radius:8px;font-family:var(--mono);font-size:12px;color:var(--t2);border-left:3px solid var(--t4);line-height:1.6}
+.cc-card:nth-child(1) .cex{border-left-color:var(--accent)}.cc-card:nth-child(2) .cex{border-left-color:var(--teal)}.cc-card:nth-child(3) .cex{border-left-color:var(--purple)}
+.pill{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 9px;border-radius:100px;margin-right:3px;margin-bottom:3px;font-weight:500}
+
+/* PATTERN ACCORDION */
+.pi{background:#fff;border:1.5px solid var(--bg3);border-radius:10px;overflow:hidden;transition:all .3s;margin-bottom:8px}
+.pi.open{border-color:var(--accent)}
+.ph{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background .2s}
+.ph:hover{background:var(--bg2)}
+.pn{font-family:var(--serif);font-weight:400;font-size:1.4rem;margin-right:14px;min-width:28px;font-style:italic}
+.pta{font-weight:600;font-size:1rem;flex:1}.par{font-size:14px;color:var(--t3);transition:transform .3s}
+.pi.open .par{transform:rotate(180deg)}.pb{max-height:0;overflow:hidden;transition:max-height .5s ease}.pbi{padding:0 20px 20px}
+.pi:nth-child(1) .pn{color:var(--accent)}.pi:nth-child(2) .pn{color:var(--teal)}.pi:nth-child(3) .pn{color:var(--purple)}.pi:nth-child(4) .pn{color:var(--blue)}.pi:nth-child(5) .pn{color:var(--amber)}
+
+/* TROUBLE CARDS */
+.tc{background:#fff;border:1.5px solid var(--bg3);border-radius:10px;padding:20px;cursor:pointer;transition:all .2s}
+.tc:hover{border-color:var(--t4);transform:translateY(-2px)}
+.tc h4{font-size:15px;font-weight:600;margin-bottom:4px}.tc .ts2{font-size:13px;color:var(--t3);line-height:1.6}
+.tso{max-height:0;overflow:hidden;transition:max-height .4s;font-size:14px;color:var(--t2);line-height:1.8}
+.tc.open .tso{max-height:800px;margin-top:12px;padding-top:12px;border-top:1.5px solid var(--bg3)}
+
+/* TIMELINE */
+.tl{position:relative;padding-left:32px}.tl::before{content:'';position:absolute;left:11px;top:0;bottom:0;width:2px;background:var(--bg3)}
+.ti{position:relative;margin-bottom:1.8rem}.td2{position:absolute;left:-32px;top:3px;width:9px;height:9px;border-radius:50%;border:2px solid;background:var(--bg)}
+.ti:nth-child(odd) .td2{border-color:var(--accent)}.ti:nth-child(even) .td2{border-color:var(--teal)}
+.ti h4{font-size:1rem;font-weight:600;margin-bottom:3px}.ti p{font-size:14px;color:var(--t2);line-height:1.8}
+
+/* FOOTER */
+.footer{border-top:1.5px solid var(--bg3);padding:3rem 2rem;text-align:center;color:var(--t3);font-size:13px}.footer a{color:var(--accent)}
+
+/* ANIMATIONS */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease}.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* QUICK REF */
+.qb{position:fixed;bottom:28px;right:20px;z-index:99;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px #C25B2830;transition:all .3s;font-family:var(--sans)}
+.qb:hover{transform:scale(1.1)}
+.qp{position:fixed;bottom:84px;right:20px;z-index:99;width:300px;max-height:55vh;overflow-y:auto;background:#fff;border:1.5px solid var(--bg3);border-radius:12px;padding:16px;display:none;box-shadow:0 8px 32px #00000012}
+.qp.open{display:block}.qp h4{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;font-weight:600}
+.qi{padding:6px 0;border-bottom:1px solid var(--bg3);font-size:12px;color:var(--t2);line-height:1.7}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="topnav"><span class="nav-logo">Skills Guide</span><div class="nav-links"><a href="#ch1">Big picture</a><a href="#ch2">Plan</a><a href="#ch3">Structure</a><a href="#ch4">Write</a><a href="#ch5">Patterns</a><a href="#ch6">Test</a><a href="#ch7">Ship</a><a href="#ch8">Resources</a></div></nav>
+<div class="nav-prog" id="np"></div>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+<div class="hero-step">A journey from zero to production skill</div>
+<h1>Build <em>skills</em> that give Claude real expertise</h1>
+<p class="hero-sub">Teach Claude your workflows, domain expertise, and best practices — packaged as portable, reusable skill folders. Build your first skill in 15-30 minutes.</p>
+<div class="hero-cta"><a href="#ch1" class="btn btn-p">Start the journey &#8595;</a><a href="https://github.com/anthropics/skills/tree/main/skills" target="_blank" class="btn btn-s">Browse example skills</a></div>
+</section>
+
+<!-- JOURNEY STRIP -->
+<div class="journey">
+<div class="journey-dot" style="background:var(--accent)">1</div><div class="journey-line"></div>
+<div class="journey-dot" style="background:var(--teal)">2</div><div class="journey-line"></div>
+<div class="journey-dot" style="background:var(--purple)">3</div><div class="journey-line"></div>
+<div class="journey-dot" style="background:var(--blue)">4</div><div class="journey-line"></div>
+<div class="journey-dot" style="background:var(--amber)">5</div><div class="journey-line"></div>
+<div class="journey-dot" style="background:var(--green)">6</div><div class="journey-line"></div>
+<div class="journey-dot" style="background:var(--coral)">7</div>
+</div>
+<div style="text-align:center;font-size:13px;color:var(--t3);padding-bottom:2rem;font-family:var(--mono)">understand &rarr; plan &rarr; structure &rarr; write &rarr; patterns &rarr; test &rarr; ship</div>
+<div class="divider"></div>
+
+<!-- ═══ CH1: THE BIG PICTURE ═══ -->
+<section class="S" id="ch1">
+<div class="reveal">
+<div class="S-label">Chapter 01 &mdash; Understand</div>
+<h2>The <em>big picture</em></h2>
+<p class="S-desc">Before you build anything, you need to understand what you're building and why it works. This chapter gives you the mental model.</p>
+<div class="wyl"><span class="wyl-icon">&#128218;</span><div><strong>What you'll learn:</strong> What a skill is, the folder structure (SKILL.md + optional scripts/references/assets), how the 3-level progressive disclosure system works, and the three design principles that make skills composable and portable.</div></div>
+</div>
+
+<div class="reveal"><p class="prose">Skills are powerful when you have repeatable workflows: generating frontend designs from specs, conducting research with consistent methodology, creating documents that follow your team's style guide, or orchestrating multi-step processes.</p></div>
+
+<div class="reveal"><h3 class="sub">The skill folder</h3><p class="prose">Click each file to learn what it does.</p>
+<div class="fe" id="fe"><div class="feh"><div class="fd r"></div><div class="fd y"></div><div class="fd g"></div><span class="ft">my-awesome-skill/</span></div>
+<div class="fi active" onclick="sf(0,this)"><span style="width:20px;text-align:center">&#128196;</span><span class="fn">SKILL.md</span><span class="fm"><span class="tag tg-r">Required</span></span></div>
+<div class="fi" onclick="sf(1,this)"><span style="width:20px;text-align:center">&#128193;</span><span class="fn">scripts/</span><span class="fm"><span class="tag tg-o">Optional</span></span></div>
+<div class="fi" onclick="sf(2,this)"><span style="width:20px;text-align:center">&#128193;</span><span class="fn">references/</span><span class="fm"><span class="tag tg-o">Optional</span></span></div>
+<div class="fi" onclick="sf(3,this)"><span style="width:20px;text-align:center">&#128193;</span><span class="fn">assets/</span><span class="fm"><span class="tag tg-o">Optional</span></span></div>
+<div class="fdp" id="fdp"><strong>SKILL.md</strong> &mdash; YAML frontmatter + Markdown instructions. The <em>only required file</em>. Must be exactly SKILL.md (case-sensitive). No variations accepted.</div>
+</div></div>
+
+<div class="reveal" style="margin-top:2.5rem"><h3 class="sub">Three design principles</h3>
+<div class="g3">
+<div class="card"><h4 style="font-size:15px;font-weight:600;margin-bottom:6px;color:var(--accent)">Progressive disclosure</h4><p style="font-size:14px;color:var(--t2)">Three-level loading: metadata always loaded (~100 words), body on trigger (&lt;500 lines), resources on demand (unlimited). Minimizes token usage.</p></div>
+<div class="card"><h4 style="font-size:15px;font-weight:600;margin-bottom:6px;color:var(--teal)">Composability</h4><p style="font-size:14px;color:var(--t2)">Claude loads multiple skills simultaneously. Your skill should work alongside others — don't assume it's the only one.</p></div>
+<div class="card"><h4 style="font-size:15px;font-weight:600;margin-bottom:6px;color:var(--purple)">Portability</h4><p style="font-size:14px;color:var(--t2)">Works identically across Claude.ai, Claude Code, and API. Create once, works everywhere. The open standard lives at <a href="https://agentskills.io" target="_blank">agentskills.io</a>.</p></div>
+</div></div>
+
+<div class="reveal" style="margin-top:2.5rem"><h3 class="sub">How progressive disclosure works</h3><p class="prose">Click each level to see how Claude loads your skill in stages.</p>
+<div id="dL">
+<div class="dl active" onclick="td(0)"><div class="dlb"></div><div class="dlc"><div style="display:flex;align-items:center"><span class="dln">1</span><div><div class="dlt">Metadata (YAML frontmatter)</div><div class="dls">Always loaded &bull; ~100 words</div></div></div><div class="dld">Always in Claude's system prompt. Just the name and description — how Claude decides if your skill is relevant. Keep descriptions under 1024 characters but specific and actionable.</div></div></div>
+<div class="dl" onclick="td(1)"><div class="dlb"></div><div class="dlc"><div style="display:flex;align-items:center"><span class="dln">2</span><div><div class="dlt">SKILL.md body</div><div class="dls">On trigger &bull; &lt;500 lines ideal</div></div></div><div class="dld">Loaded when Claude thinks the skill is relevant. Contains your full instructions, workflow steps, examples, and error handling. If it's getting long, move details to reference files.</div></div></div>
+<div class="dl" onclick="td(2)"><div class="dlb"></div><div class="dlc"><div style="display:flex;align-items:center"><span class="dln">3</span><div><div class="dlt">Linked files</div><div class="dls">On demand &bull; Unlimited</div></div></div><div class="dld">Scripts, references, assets in subdirectories. Claude loads only what's needed. Scripts execute without being read into context — no token cost for running code.</div></div></div>
+</div></div>
+</section>
+<div class="divider"></div>
+
+<!-- ═══ CH2: PLAN YOUR SKILL ═══ -->
+<section class="S" id="ch2">
+<div class="reveal">
+<div class="S-label">Chapter 02 &mdash; Plan</div>
+<h2>Plan <em>your skill</em></h2>
+<p class="S-desc">You know what a skill is. Now decide what yours should do. Clear planning prevents wasted effort — most skill problems trace back to vague use cases.</p>
+<div class="ch-from">&#8618; Building on Chapter 1: you understand the folder structure and progressive disclosure. Now you'll decide what to put inside.</div>
+<div class="wyl"><span class="wyl-icon">&#128218;</span><div><strong>What you'll learn:</strong> How to define concrete use cases (trigger, steps, result), the three categories of skills (document creation, workflow automation, MCP enhancement), and how to set measurable success criteria.</div></div>
+</div>
+
+<div class="reveal"><h3 class="sub">Define your use cases</h3><p class="prose">Start with 2-3 concrete scenarios. Ask: What does a user want to accomplish? What steps are needed? Which tools (built-in or MCP)?</p>
+<div class="cdb"><div class="cdh"><span class="cdl">Use case template</span><button class="cdc" onclick="cc(this)">Copy</button></div><pre class="cb"><span class="ck">Use Case:</span> <span class="cs">Project Sprint Planning</span>
+<span class="ck">Trigger:</span>  <span class="cs">User says "help me plan this sprint" or "create sprint tasks"</span>
+<span class="ck">Steps:</span>
+  <span class="cv">1.</span> Fetch current project status from Linear (via MCP)
+  <span class="cv">2.</span> Analyze team velocity and capacity
+  <span class="cv">3.</span> Suggest task prioritization
+  <span class="cv">4.</span> Create tasks in Linear with proper labels and estimates
+<span class="ck">Result:</span> <span class="ca">Fully planned sprint with tasks created</span></pre></div></div>
+
+<div class="reveal" style="margin-top:2rem"><h3 class="sub">Three categories of skills</h3>
+<div class="g3">
+<div class="cc-card"><div class="ccb">Category 1</div><h3>Document &amp; asset creation</h3><p>Consistent output: documents, presentations, code, designs. Uses Claude's built-in capabilities — no external tools required.</p><div class="cex">Example: frontend-design skill &mdash; "Create distinctive, production-grade frontend interfaces."</div></div>
+<div class="cc-card"><div class="ccb">Category 2</div><h3>Workflow automation</h3><p>Multi-step processes with consistent methodology, templates, validation gates, and iterative refinement loops.</p><div class="cex">Example: skill-creator skill &mdash; "Interactive guide for creating new skills."</div></div>
+<div class="cc-card"><div class="ccb">Category 3</div><h3>MCP enhancement</h3><p>Workflow guidance on top of MCP tool access. Coordinates multiple MCP calls and embeds domain expertise.</p><div class="cex">Example: sentry-code-review &mdash; "Analyzes and fixes bugs using Sentry data via MCP."</div></div>
+</div></div>
+
+<div class="reveal" style="margin-top:2rem"><h3 class="sub">Success criteria</h3><p class="prose">Set targets up front — rough benchmarks rather than precise thresholds. Aim for rigor but accept an element of vibes-based assessment.</p>
+<div class="g2">
+<div class="card"><h4 style="font-size:15px;font-weight:600;margin-bottom:8px;color:var(--teal)">Quantitative</h4><div style="font-size:14px;color:var(--t2);line-height:2"><strong>90% trigger rate</strong> &mdash; test 10-20 queries<br><strong>Fewer tool calls</strong> &mdash; compare with/without<br><strong>0 failed API calls</strong> &mdash; monitor MCP logs</div></div>
+<div class="card"><h4 style="font-size:15px;font-weight:600;margin-bottom:8px;color:var(--purple)">Qualitative</h4><div style="font-size:14px;color:var(--t2);line-height:2"><strong>No next-step prompting</strong> &mdash; user doesn't redirect<br><strong>No corrections needed</strong> &mdash; run 3-5 times<br><strong>First-try success</strong> &mdash; new user completes task</div></div>
+</div></div>
+</section>
+<div class="divider"></div>
+
+<!-- ═══ CH3: STRUCTURE ═══ -->
+<section class="S" id="ch3">
+<div class="reveal">
+<div class="S-label">Chapter 03 &mdash; Structure</div>
+<h2>Get the <em>structure</em> right</h2>
+<p class="S-desc">You have use cases and success criteria. Now create the actual folder and YAML. Get the structure wrong and Claude will never find your skill.</p>
+<div class="ch-from">&#8618; Building on Chapter 2: your use cases tell you the skill name, and your trigger phrases go straight into the description field.</div>
+<div class="wyl"><span class="wyl-icon">&#128218;</span><div><strong>What you'll learn:</strong> Folder naming conventions, YAML frontmatter format (required and optional fields), the 64-character name limit, security restrictions, and common upload errors to avoid.</div></div>
+</div>
+
+<div class="reveal"><h3 class="sub">Naming rules</h3>
+<div class="g2">
+<div class="cmp good"><div class="cml">&#10003; Correct</div><div class="cmb">Folder: <code>notion-project-setup</code> (kebab-case)<br>File: <code>SKILL.md</code> (exact casing, no variations)<br>Name field: <code>my-cool-skill</code> (max 64 chars)<br>No README.md inside the skill folder</div></div>
+<div class="cmp bad"><div class="cml">&#10007; Wrong</div><div class="cmb">Folder: <code style="color:var(--coral)">Notion Project Setup</code> (spaces)<br>File: <code style="color:var(--coral)">skill.md</code> / <code style="color:var(--coral)">SKILL.MD</code><br>Name: <code style="color:var(--coral)">My Cool Skill</code> / <code style="color:var(--coral)">notion_project_setup</code></div></div>
+</div>
+<div class="tip tip-w"><span class="tip-i">&#9888;</span><div><strong>Security:</strong> No XML brackets (&lt; &gt;) in frontmatter. No "claude" or "anthropic" in names (reserved). Frontmatter appears in the system prompt — malicious content could inject instructions.</div></div>
+</div>
+
+<div class="reveal"><h3 class="sub">YAML frontmatter</h3><p class="prose">This is how Claude decides whether to load your skill. The minimal version is just two fields:</p>
+<div class="cdb"><div class="cdh"><span class="cdl">Minimal &mdash; all you need to start</span><button class="cdc" onclick="cc(this)">Copy</button></div><pre class="cb"><span class="cc">---</span>
+<span class="ck">name:</span> <span class="cs">your-skill-name</span>
+<span class="ck">description:</span> <span class="cs">What it does. Use when user asks to [specific phrases].</span>
+<span class="cc">---</span></pre></div>
+<h4 class="sub">Full reference with all optional fields</h4>
+<div class="cdb"><div class="cdh"><span class="cdl">YAML &mdash; Complete</span><button class="cdc" onclick="cc(this)">Copy</button></div><pre class="cb"><span class="cc">---</span>
+<span class="ck">name:</span> <span class="cs">skill-name</span>                       <span class="cc"># required, kebab-case, max 64 chars</span>
+<span class="ck">description:</span> <span class="cs">[required]</span>                 <span class="cc"># required, max 1024 chars</span>
+<span class="ck">license:</span> <span class="cv">MIT</span>                             <span class="cc"># optional (MIT, Apache-2.0)</span>
+<span class="ck">allowed-tools:</span> <span class="cs">"Bash(python:*) WebFetch"</span> <span class="cc"># optional (Claude Code CLI only)</span>
+<span class="ck">compatibility:</span> <span class="cs">Claude Code</span>              <span class="cc"># optional, 1-500 chars</span>
+<span class="ck">metadata:</span>                                <span class="cc"># optional: custom key-value pairs</span>
+  <span class="ck">author:</span> <span class="cv">Company Name</span>
+  <span class="ck">version:</span> <span class="cv">1.0.0</span>
+  <span class="ck">mcp-server:</span> <span class="cv">server-name</span>
+  <span class="ck">tags:</span> <span class="cv">[project-management, automation]</span>
+<span class="cc">---</span></pre></div></div>
+</section>
+<div class="divider"></div>
+
+<!-- ═══ CH4: WRITE YOUR SKILL ═══ -->
+<section class="S" id="ch4">
+<div class="reveal">
+<div class="S-label">Chapter 04 &mdash; Write</div>
+<h2>Write <em>your skill</em></h2>
+<p class="S-desc">Your folder exists with valid YAML. Now fill it with instructions Claude will actually follow. The quality of your writing directly determines how well the skill performs.</p>
+<div class="ch-from">&#8618; Building on Chapter 3: your YAML frontmatter is set. Now write the description that triggers correctly and the body that guides Claude through your workflow.</div>
+<div class="wyl"><span class="wyl-icon">&#128218;</span><div><strong>What you'll learn:</strong> How to write descriptions that trigger correctly (WHAT + WHEN + trigger phrases, always in third person), how to structure the SKILL.md body with the recommended template, and three core writing principles from Anthropic's official best practices.</div></div>
+</div>
+
+<div class="reveal"><h3 class="sub">Three writing principles</h3>
+<div class="g3">
+<div class="card"><h4 style="font-size:15px;font-weight:600;margin-bottom:6px;color:var(--accent)">Concise is key</h4><p style="font-size:14px;color:var(--t2)">The context window is a public good. Challenge every paragraph: "Does this justify its token cost?" Only add what Claude doesn't already know.</p></div>
+<div class="card"><h4 style="font-size:15px;font-weight:600;margin-bottom:6px;color:var(--teal)">Match the degrees of freedom</h4><p style="font-size:14px;color:var(--t2)"><strong>High:</strong> General guidance (code reviews). <strong>Medium:</strong> Templates with parameters (reports). <strong>Low:</strong> Exact scripts for fragile operations (migrations).</p></div>
+<div class="card"><h4 style="font-size:15px;font-weight:600;margin-bottom:6px;color:var(--purple)">Explain the why</h4><p style="font-size:14px;color:var(--t2)">Claude is smart. Explain reasoning instead of rigid rules — the model goes beyond rote instructions when it understands purpose.</p></div>
+</div></div>
+
+<div class="reveal"><h3 class="sub">The description field</h3>
+<div class="tip tip-f" style="margin-bottom:1rem"><span class="tip-i">&#128221;</span><div><strong>Write in third person.</strong> "Processes Excel files and generates reports" — not "I can help you." The description is injected into the system prompt; inconsistent POV causes discovery problems.</div></div>
+<div class="g2">
+<div class="cmp good"><div class="cml">&#10003; Good descriptions</div><div class="cmb"><strong>Specific:</strong> "Analyzes Figma design files and generates developer handoff documentation. Use when user uploads .fig files or asks for design specs."<br><br><strong>With triggers:</strong> "Manages Linear project workflows. Use when user mentions sprint, Linear tasks, or create tickets."</div></div>
+<div class="cmp bad"><div class="cml">&#10007; Bad descriptions</div><div class="cmb"><strong>Too vague:</strong> "Helps with projects."<br><br><strong>No triggers:</strong> "Creates sophisticated multi-page documentation systems."<br><br><strong>Too technical:</strong> "Implements the Project entity model with hierarchical relationships."</div></div>
+</div></div>
+
+<div class="reveal"><h3 class="sub">SKILL.md template</h3>
+<div class="cdb"><div class="cdh"><span class="cdl">Recommended structure</span><button class="cdc" onclick="cc(this)">Copy</button></div><pre class="cb"><span class="cc">---</span>
+<span class="ck">name:</span> <span class="cs">your-skill</span>
+<span class="ck">description:</span> <span class="cs">[What + When + Triggers]</span>
+<span class="cc">---</span>
+
+<span class="cv"># Your Skill Name</span>
+
+<span class="cv"># Step 1: [First Major Step]</span>
+Clear explanation of what happens.
+```bash
+python scripts/fetch_data.py --project-id PROJECT_ID
+```
+Expected output: [describe what success looks like]
+
+<span class="cv"># Examples</span>
+User says: "Set up a new marketing campaign"
+Result: Campaign created with confirmation link
+
+<span class="cv"># Troubleshooting</span>
+<span class="cv">## Error: [Common error message]</span>
+Cause: [Why it happens]
+Solution: [How to fix]</pre></div>
+
+<div class="tip tip-s"><span class="tip-i">&#128736;</span><div><strong>Bundle scripts for critical checks.</strong> Code is deterministic; language isn't. For operations where reliability matters, use a script rather than hoping instructions are followed exactly.</div></div>
+<div class="tip tip-f"><span class="tip-i">&#128279;</span><div><strong>Keep references one level deep.</strong> SKILL.md links to reference files directly. Don't chain: SKILL.md → advanced.md → details.md. Claude may only partially read nested files.</div></div>
+</div>
+</section>
+<div class="divider"></div>
+
+<!-- ═══ CH5: BUILD WITH PATTERNS ═══ -->
+<section class="S" id="ch5">
+<div class="reveal">
+<div class="S-label">Chapter 05 &mdash; Patterns</div>
+<h2>Build with <em>proven patterns</em></h2>
+<p class="S-desc">You can write a skill from scratch. But you don't have to start from zero — these battle-tested patterns give you a head start for the most common use cases.</p>
+<div class="ch-from">&#8618; Building on Chapter 4: you know how to write instructions. Now pick the pattern that matches your use case from Chapter 2 and adapt its template.</div>
+<div class="wyl"><span class="wyl-icon">&#128218;</span><div><strong>What you'll learn:</strong> The problem-first vs. tool-first framing (Home Depot analogy), how MCP and skills work together ("kitchen analogy"), and five proven patterns with full code examples you can copy and adapt.</div></div>
+</div>
+
+<div class="reveal">
+<div class="tip tip-f"><span class="tip-i">&#127968;</span><div><strong>Problem-first vs. tool-first:</strong> Think of it like Home Depot. Walk in with a problem ("fix a cabinet") and an employee points to the right tools. Or pick out a drill and ask how to use it. <em>Problem-first</em> = user describes outcomes, skill handles tools. <em>Tool-first</em> = user has MCP access, skill provides expertise.</div></div>
+</div>
+
+<div class="reveal"><h3 class="sub">MCP + Skills: the kitchen analogy</h3>
+<p class="prose">MCP provides the professional kitchen (tools, ingredients, equipment). Skills provide the recipes (step-by-step instructions). Together, they enable complex tasks without users figuring out every step.</p>
+<table class="mt"><tr><th style="width:50%">MCP (Connectivity)</th><th>Skills (Knowledge)</th></tr><tr><td>Connects Claude to your service</td><td>Teaches Claude how to use it <em>effectively</em></td></tr><tr><td>Real-time data access &amp; tool invocation</td><td>Workflows and best practices</td></tr><tr><td><strong>What Claude can do</strong></td><td><strong>How Claude should do it</strong></td></tr></table></div>
+
+<div class="reveal"><h3 class="sub">Five patterns</h3><p class="prose">Click any pattern to see the full code example.</p>
+
+<div class="pi" onclick="tp(this)"><div class="ph"><span class="pn">1</span><span class="pta">Sequential workflow orchestration</span><span class="par">&#9660;</span></div><div class="pb"><div class="pbi"><p class="prose"><strong>Use when:</strong> Multi-step processes in a specific order.</p><div class="cdb"><div class="cdh"><span class="cdl">Onboard new customer</span></div><pre class="cb"><span class="cv"># Step 1: Create Account</span>
+Call MCP tool: <span class="cs">`create_customer`</span>
+Parameters: name, email, company
+
+<span class="cv"># Step 2: Setup Payment</span>
+Call MCP tool: <span class="cs">`setup_payment_method`</span>
+Wait for: payment method verification
+
+<span class="cv"># Step 3: Create Subscription</span>
+Call MCP tool: <span class="cs">`create_subscription`</span>
+Parameters: plan_id, customer_id (from Step 1)
+
+<span class="cv"># Step 4: Send Welcome Email</span>
+Call MCP tool: <span class="cs">`send_email`</span>
+Template: welcome_email_template</pre></div><p style="font-size:13px;color:var(--t3)"><strong>Key:</strong> Explicit step ordering, dependencies, validation at each stage, rollback for failures.</p></div></div></div>
+
+<div class="pi" onclick="tp(this)"><div class="ph"><span class="pn">2</span><span class="pta">Multi-MCP coordination</span><span class="par">&#9660;</span></div><div class="pb"><div class="pbi"><p class="prose"><strong>Use when:</strong> Workflows span multiple services.</p><div class="cdb"><div class="cdh"><span class="cdl">Design-to-dev handoff</span></div><pre class="cb"><span class="cv"># Phase 1: Design Export (Figma MCP)</span>
+1. Export design assets, generate specs, create manifest
+
+<span class="cv"># Phase 2: Asset Storage (Drive MCP)</span>
+1. Create project folder, upload assets, generate links
+
+<span class="cv"># Phase 3: Task Creation (Linear MCP)</span>
+1. Create dev tasks, attach assets, assign team
+
+<span class="cv"># Phase 4: Notification (Slack MCP)</span>
+1. Post handoff summary to #engineering</pre></div><p style="font-size:13px;color:var(--t3)"><strong>Key:</strong> Phase separation, data passing between MCPs, validation before advancing.</p></div></div></div>
+
+<div class="pi" onclick="tp(this)"><div class="ph"><span class="pn">3</span><span class="pta">Iterative refinement</span><span class="par">&#9660;</span></div><div class="pb"><div class="pbi"><p class="prose"><strong>Use when:</strong> Output quality improves with iteration (reports, reviews, content).</p><div class="cdb"><div class="cdh"><span class="cdl">Report generation</span></div><pre class="cb"><span class="cv"># Draft</span> &rarr; Fetch data, generate first draft, save temp file
+<span class="cv"># Check</span> &rarr; Run <span class="cs">`scripts/check_report.py`</span>, identify issues
+<span class="cv"># Refine</span> &rarr; Fix issues, regenerate sections, re-validate
+<span class="cv"># Ship</span> &rarr; Apply formatting, generate summary, save final</pre></div><p style="font-size:13px;color:var(--t3)"><strong>Key:</strong> Explicit quality criteria, validation scripts, know when to stop.</p></div></div></div>
+
+<div class="pi" onclick="tp(this)"><div class="ph"><span class="pn">4</span><span class="pta">Context-aware tool selection</span><span class="par">&#9660;</span></div><div class="pb"><div class="pbi"><p class="prose"><strong>Use when:</strong> Same outcome, different tools depending on context.</p><div class="cdb"><div class="cdh"><span class="cdl">Smart file storage</span></div><pre class="cb"><span class="cv"># Decision Tree</span>
+Large files (&gt;10MB) &rarr; <span class="cs">cloud storage MCP</span>
+Collaborative docs &rarr; <span class="cs">Notion/Docs MCP</span>
+Code files &rarr; <span class="cs">GitHub MCP</span>
+Temporary &rarr; <span class="cs">local storage</span>
+
+<span class="cv"># Then:</span> Call tool, apply metadata, generate link, explain choice</pre></div><p style="font-size:13px;color:var(--t3)"><strong>Key:</strong> Clear decision criteria, fallbacks, transparency about choices.</p></div></div></div>
+
+<div class="pi" onclick="tp(this)"><div class="ph"><span class="pn">5</span><span class="pta">Domain-specific intelligence</span><span class="par">&#9660;</span></div><div class="pb"><div class="pbi"><p class="prose"><strong>Use when:</strong> Your skill adds specialized knowledge beyond tool access.</p><div class="cdb"><div class="cdh"><span class="cdl">Payment compliance</span></div><pre class="cb"><span class="cv"># Compliance Check</span>
+Fetch transaction &rarr; check sanctions &rarr; verify jurisdiction &rarr; assess risk
+
+<span class="cv"># Process</span>
+IF passed: process payment with fraud checks
+ELSE: flag for review, create compliance case
+
+<span class="cv"># Audit</span>
+Log checks, record decisions, generate report</pre></div><p style="font-size:13px;color:var(--t3)"><strong>Key:</strong> Domain expertise in logic, compliance before action, audit trail.</p></div></div></div>
+</div>
+</section>
+<div class="divider"></div>
+
+<!-- ═══ CH6: TEST & REFINE ═══ -->
+<section class="S" id="ch6">
+<div class="reveal">
+<div class="S-label">Chapter 06 &mdash; Test</div>
+<h2>Test &amp; <em>refine</em></h2>
+<p class="S-desc">You have a working skill. But "works once" isn't enough — you need to know it triggers reliably, produces correct output, and actually outperforms not having a skill at all.</p>
+<div class="ch-from">&#8618; Building on Chapter 5: your skill is written using a proven pattern. Now validate it against the success criteria you defined in Chapter 2.</div>
+<div class="wyl"><span class="wyl-icon">&#128218;</span><div><strong>What you'll learn:</strong> Three areas to test (triggering, functional, performance), the "Claude A / Claude B" development pattern, how to use the skill-creator for rapid iteration, and how to read under/over-triggering signals.</div></div>
+</div>
+
+<div class="reveal tip tip-s"><span class="tip-i">&#128161;</span><div><strong>Pro tip:</strong> Iterate on a single challenging task until Claude succeeds, then extract the winning approach into a skill. Faster signal than broad testing.</div></div>
+
+<div class="reveal"><h3 class="sub">Three areas of testing</h3>
+
+<h4 class="sub" style="color:var(--accent)">1. Triggering — does it load when it should?</h4>
+<p class="prose"><strong>How to test:</strong> Write 3-5 queries that should trigger your skill and 3-5 that shouldn't. Send each to Claude with the skill installed. Check whether it actually loaded the skill or ignored it. If you're unsure, ask Claude directly: <code>"When would you use the [skill-name] skill?"</code> — Claude will quote the description back, revealing what it sees.</p>
+<div class="cdb"><div class="cdh"><span class="cdl">Example: testing a "project-setup" skill</span></div><pre class="cb"><span class="cs">Should trigger (send these and verify skill loads):</span>
+  "Help me set up a new ProjectHub workspace"
+  "Initialize a ProjectHub project for Q4 planning"
+
+<span class="cv">Should NOT trigger (verify skill stays dormant):</span>
+  "What's the weather in San Francisco?"
+  "Help me write a Python function"
+
+<span class="ca">Debug if unclear:</span>
+  "When would you use the project-setup skill?"
+  → Claude quotes description back → adjust if gaps found</pre></div>
+
+<h4 class="sub" style="color:var(--teal)">2. Functional — does it produce the right output?</h4>
+<p class="prose"><strong>How to test:</strong> Pick a realistic task your skill should handle. Run it 3-5 times with the skill enabled. Check: Did it follow the steps in order? Did all API/MCP calls succeed? Does the output match what you'd expect? Run the same task without the skill to compare — the skill version should be noticeably better or faster.</p>
+<div class="cdb"><div class="cdh"><span class="cdl">Example: testing a sprint planning skill</span></div><pre class="cb"><span class="ck">Prompt:</span>  "Plan next sprint for Project Alpha with 5 tasks"
+
+<span class="cs">Check each run for:</span>
+  ✓ Project fetched from Linear (Step 1 followed)
+  ✓ Velocity calculated from last 2 sprints (Step 2)
+  ✓ 5 tasks created with labels and estimates (Step 3)
+  ✓ No API errors in the process
+  ✓ Output is consistent across 3 runs
+
+<span class="cv">Compare against no-skill baseline:</span>
+  Without skill → user had to explain each step manually
+  With skill → automatic workflow, same quality every time</pre></div>
+
+<h4 class="sub" style="color:var(--purple)">3. Performance — is it measurably better?</h4>
+<p class="prose"><strong>How to test:</strong> Run the same task with and without the skill. Count three things: messages exchanged, failed API calls, and total tokens consumed. The skill version should require fewer messages, zero failures, and roughly half the tokens.</p>
+<div class="g2">
+<div class="cmp bad"><div class="cml">Without skill (baseline)</div><div class="cmb">User explains workflow manually each time<br>15 back-and-forth messages<br>3 failed API calls requiring retry<br>12,000 tokens consumed</div></div>
+<div class="cmp good"><div class="cml">With skill</div><div class="cmb">Automatic workflow execution<br>2 clarifying questions only<br>0 failed API calls<br>6,000 tokens consumed</div></div>
+</div></div>
+
+<div class="reveal" style="margin-top:2rem"><h3 class="sub">"Claude A / Claude B" development pattern</h3><p class="prose">The officially recommended approach: use two Claude instances working together.</p>
+<div class="g2">
+<div class="card"><h4 style="font-size:15px;font-weight:600;margin-bottom:6px;color:var(--teal)">Claude A &mdash; the designer</h4><p style="font-size:14px;color:var(--t2)">Work through the task using normal prompting. Notice what context you repeatedly provide. Ask Claude A to capture the pattern into a SKILL.md.</p></div>
+<div class="card"><h4 style="font-size:15px;font-weight:600;margin-bottom:6px;color:var(--purple)">Claude B &mdash; the tester</h4><p style="font-size:14px;color:var(--t2)">Open a separate session with the skill loaded. Give it real tasks. Observe where it struggles. Bring observations back to Claude A for improvements.</p></div>
+</div></div>
+
+<div class="reveal" style="margin-top:2rem"><h3 class="sub">The skill-creator &mdash; your best friend</h3>
+<div class="tip tip-a"><span class="tip-i">&#11088;</span><div><strong>Strongly recommended:</strong> The <a href="https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md" target="_blank">skill-creator</a> is Anthropic's official skill for building, testing, and iterating on skills. Built into Claude.ai and Claude Code. Start here &mdash; idea to working skill in 15-30 minutes.</div></div>
+<div class="g2">
+<div class="card"><h4 style="font-size:14px;font-weight:600;margin-bottom:6px;color:var(--teal)">What it does</h4><p style="font-size:13px;color:var(--t2)"><strong>Create</strong> from natural language &bull; <strong>Review</strong> for issues &bull; <strong>Test</strong> against baselines &bull; <strong>Optimize</strong> description for triggering</p></div>
+<div class="card"><h4 style="font-size:14px;font-weight:600;margin-bottom:6px;color:var(--purple)">The workflow</h4><p style="font-size:13px;color:var(--t2)"><strong>1.</strong> Define intent<br><strong>2.</strong> Draft SKILL.md<br><strong>3.</strong> Test vs. baseline<br><strong>4.</strong> Human review + feedback<br><strong>5.</strong> Iterate<br><strong>6.</strong> Optimize triggers</p></div>
+</div>
+<div class="cdb" style="margin-top:1rem"><div class="cdh"><span class="cdl">How to invoke</span><button class="cdc" onclick="cc(this)">Copy</button></div><pre class="cb">"Use the skill-creator skill to help me build a skill for [your use case]"
+"Use the issues in this chat to improve how it handles [edge case]"
+"Review this skill and suggest improvements"</pre></div>
+</div>
+
+<div class="reveal" style="margin-top:2rem"><h3 class="sub">Iteration signals</h3>
+<div class="g3">
+<div class="card"><h4 style="font-size:14px;font-weight:600;margin-bottom:6px;color:var(--amber)">Undertriggering</h4><p style="font-size:13px;color:var(--t2)"><strong>Signs:</strong> Doesn't load when it should<br><strong>Fix:</strong> Add keywords, technical terms, trigger phrases to description</p></div>
+<div class="card"><h4 style="font-size:14px;font-weight:600;margin-bottom:6px;color:var(--coral)">Overtriggering</h4><p style="font-size:13px;color:var(--t2)"><strong>Signs:</strong> Loads for unrelated queries<br><strong>Fix:</strong> First, make the description more specific. If that's not enough, add "Do NOT use for..." to explicitly exclude the conflicting cases.</p></div>
+<div class="card"><h4 style="font-size:14px;font-weight:600;margin-bottom:6px;color:var(--purple)">Execution issues</h4><p style="font-size:13px;color:var(--t2)"><strong>Signs:</strong> Inconsistent results, failures<br><strong>Fix:</strong> Improve instructions, add error handling, bundle scripts</p></div>
+</div></div>
+
+<!-- VALIDATOR -->
+<div class="reveal" style="margin-top:2rem"><h3 class="sub">Skill validator</h3><p class="prose">Paste your SKILL.md and validate against the official checklist.</p>
+<div style="background:#fff;border:1.5px solid var(--bg3);border-radius:10px;overflow:hidden">
+<div style="padding:14px 18px;border-bottom:1.5px solid var(--bg3);background:var(--bg2);display:flex;align-items:center;gap:8px"><div class="fd r"></div><div class="fd y"></div><div class="fd g"></div><span class="ft">skill-validator</span></div>
+<div style="padding:18px">
+<textarea id="vInput" style="width:100%;min-height:160px;padding:12px 14px;background:var(--bg2);border:1.5px solid var(--bg3);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:12px;line-height:1.7;outline:none;resize:vertical" placeholder="---&#10;name: my-skill&#10;description: What it does. Use when...&#10;---&#10;&#10;# My Skill&#10;&#10;# Step 1: ..."></textarea>
+<div style="display:flex;gap:10px;margin-top:12px;align-items:center">
+<button class="btn btn-p" style="font-size:13px;padding:9px 22px" onclick="validateSkill()">Validate</button>
+<button class="btn btn-s" style="font-size:12px;padding:8px 16px" onclick="loadExample()">Load example</button>
+<span id="vScore" style="font-family:var(--mono);font-size:13px;color:var(--t3);margin-left:auto"></span>
+</div></div>
+<div id="vResults" style="display:none;padding:0 18px 18px">
+<div style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px"><span style="font-size:14px;font-weight:600">Overall score</span><span id="vPct" style="font-family:var(--mono);font-size:20px;font-weight:700"></span></div><div style="height:6px;background:var(--bg3);border-radius:3px;overflow:hidden"><div id="vBar" style="height:100%;border-radius:3px;transition:width .6s ease,background .3s"></div></div></div>
+<div style="margin-bottom:14px"><div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:6px;font-weight:600">Before you start</div><div id="vP1"></div></div>
+<div style="margin-bottom:14px"><div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:6px;font-weight:600">During development</div><div id="vP2"></div></div>
+<div style="margin-bottom:14px"><div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--purple);margin-bottom:6px;font-weight:600">Before upload</div><div id="vP3"></div></div>
+<div style="margin-bottom:14px"><div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--amber);margin-bottom:6px;font-weight:600">After upload</div><div id="vP4"></div></div>
+<div id="vRecs" style="display:none;margin-top:8px;padding:14px 16px;background:var(--amber-bg);border:1.5px solid #B07D1A18;border-radius:10px;font-size:13px;color:var(--t2);line-height:1.8"></div>
+</div></div></div>
+</section>
+<div class="divider"></div>
+
+<!-- ═══ CH7: SHIP & SHARE ═══ -->
+<section class="S" id="ch7">
+<div class="reveal">
+<div class="S-label">Chapter 07 &mdash; Ship</div>
+<h2>Ship &amp; <em>share</em></h2>
+<p class="S-desc">Your skill is tested and working. Now get it to your team, handle the issues that come up in the real world, and make sure people actually adopt it.</p>
+<div class="ch-from">&#8618; Building on Chapter 6: testing confirmed the skill works. Now upload it, share it with your team, and iterate on the feedback that comes in from real usage.</div>
+<div class="wyl"><span class="wyl-icon">&#128218;</span><div><strong>What you'll learn:</strong> How to upload skills (claude.ai vs. API vs. Claude Code), the key difference between per-user and org-wide distribution, how to share with your team, how to troubleshoot the six most common issues, and how to position your skill for adoption.</div></div>
+</div>
+
+<div class="reveal tip tip-w"><span class="tip-i">&#9888;</span><div><strong>Security:</strong> Use Skills only from trusted sources. Malicious Skills can direct Claude to invoke tools in unexpected ways. Audit all files (SKILL.md, scripts, resources) from unknown sources.</div></div>
+
+<div class="reveal"><h3 class="sub">Upload your skill</h3>
+<div class="tl">
+<div class="ti"><div class="td2"></div><h4>Claude.ai</h4><p>Settings &gt; Features &gt; Upload skill (zip). Pro, Max, Team, Enterprise plans. <strong>Custom skills are per-user</strong> — not shared org-wide.</p></div>
+<div class="ti"><div class="td2"></div><h4>Claude Code</h4><p>Place in <code>.claude/skills/</code> directory. Auto-discovered, no upload needed.</p></div>
+<div class="ti"><div class="td2"></div><h4>API</h4><p><code>/v1/skills</code> endpoint. Up to 8 skills per request via <code>container.skills</code>. <strong>API skills are shared org-wide.</strong> Requires 3 beta headers.</p></div>
+<div class="ti"><div class="td2"></div><h4>Agent SDK</h4><p>Skills in <code>.claude/skills/</code> with <code>allowed_tools: ["Skill"]</code>. Auto-discovered.</p></div>
+</div></div>
+
+<div class="reveal" style="margin-top:2rem"><h3 class="sub">Share with your team</h3>
+<p class="prose">The right sharing method depends on how your team uses Claude. Here are the options, from simplest to most controlled:</p>
+
+<div class="g2" style="margin-top:1rem">
+<div class="card">
+<h4 style="font-size:15px;font-weight:600;margin-bottom:8px;color:var(--accent)">Option 1: Git repo (recommended for most teams)</h4>
+<p style="font-size:14px;color:var(--t2);line-height:1.9"><strong>How:</strong> Commit your skill folder to a shared repo (e.g. <code>your-org/claude-skills</code>). Each team member clones it and either uploads the zip to Claude.ai or places it in their <code>.claude/skills/</code> for Claude Code.<br><br><strong>Best for:</strong> Teams using Claude Code. Skills auto-discover from the filesystem, and Git gives you version history, code review via PRs, and easy rollback.<br><br><strong>Example structure:</strong></p>
+<div class="cdb" style="margin-top:8px"><div class="cdh"><span class="cdl">Repo layout</span></div><pre class="cb">your-org/claude-skills/
+├── sprint-planner/
+│   └── SKILL.md
+├── code-review/
+│   ├── SKILL.md
+│   └── scripts/validate.py
+└── README.md          <span class="cc"># repo-level only, NOT inside skill folders</span></pre></div>
+</div>
+
+<div class="card">
+<h4 style="font-size:15px;font-weight:600;margin-bottom:8px;color:var(--teal)">Option 2: API upload (org-wide, centrally managed)</h4>
+<p style="font-size:14px;color:var(--t2);line-height:1.9"><strong>How:</strong> Upload via the <code>/v1/skills</code> API endpoint. Skills become available to all workspace members automatically — no individual setup needed.<br><br><strong>Best for:</strong> Teams using the API or Agent SDK for production deployments. Supports versioning and pinning.<br><br><strong>Key detail:</strong> This is the <em>only</em> method that shares skills org-wide. Claude.ai uploads are always per-user.</p>
+</div>
+</div>
+
+<div class="g2" style="margin-top:1rem">
+<div class="card">
+<h4 style="font-size:15px;font-weight:600;margin-bottom:8px;color:var(--purple)">Option 3: Plugin marketplace (Claude Code)</h4>
+<p style="font-size:14px;color:var(--t2);line-height:1.9"><strong>How:</strong> Package skills as a Claude Code plugin. Team members install with one command: <code>/plugin install your-plugin</code>. Skills from plugins are auto-namespaced to avoid conflicts.<br><br><strong>Best for:</strong> Distributing multiple related skills as a bundle.</p>
+</div>
+
+<div class="card">
+<h4 style="font-size:15px;font-weight:600;margin-bottom:8px;color:var(--amber)">Option 4: Zip + manual share</h4>
+<p style="font-size:14px;color:var(--t2);line-height:1.9"><strong>How:</strong> Zip the skill folder and share via Slack, email, or a shared drive. Each person uploads it in Claude.ai via Settings &gt; Features.<br><br><strong>Best for:</strong> Quick sharing with 1-2 people. Doesn't scale well — no version control, each person manages their own copy.</p>
+</div>
+</div>
+
+<div class="tip tip-f" style="margin-top:1rem"><span class="tip-i">&#128161;</span><div><strong>Which to pick:</strong> If your team uses Claude Code → <strong>Git repo</strong> (skills auto-load from the filesystem). If you need org-wide control → <strong>API upload</strong> (the only method that shares automatically). If you're just sharing with a colleague → <strong>zip it and send</strong>.</div></div>
+</div>
+
+<div class="reveal" style="margin-top:2rem"><h3 class="sub">Troubleshooting</h3><p class="prose">Click any card to reveal the fix.</p>
+<div class="g3" style="align-items:start">
+<div class="tc" onclick="tt(this)"><h4 style="color:var(--coral)">Skill won't upload</h4><div class="ts2">Naming or YAML errors</div><div class="tso"><strong>"Could not find SKILL.md":</strong> Must be exactly <code>SKILL.md</code>. Verify: <code>ls -la</code>.<br><br><strong>"Invalid frontmatter":</strong> Missing --- delimiters or unclosed quotes.<br><br><strong>"Invalid name":</strong> Use <code>my-cool-skill</code>, not <code style="color:var(--coral)">My Cool Skill</code>.</div></div>
+<div class="tc" onclick="tt(this)"><h4 style="color:var(--amber)">Doesn't trigger</h4><div class="ts2">Skill never loads automatically</div><div class="tso">Is description too generic? Has trigger phrases? Mentions file types?<br><br><strong>Debug:</strong> Ask Claude: "When would you use the [skill] skill?" Adjust based on response.</div></div>
+<div class="tc" onclick="tt(this)"><h4 style="color:var(--purple)">Triggers too often</h4><div class="ts2">Loads for unrelated queries</div><div class="tso">Add negative triggers: "Do NOT use for simple exploration."<br>Be more specific: <code style="color:var(--coral)">Processes documents</code> &rarr; <code>Processes PDF legal documents for contract review</code></div></div>
+<div class="tc" onclick="tt(this)"><h4 style="color:var(--teal)">MCP calls fail</h4><div class="ts2">Skill loads but tools error</div><div class="tso">1. Check MCP connection in Settings<br>2. Verify API keys and scopes<br>3. Test MCP without the skill first<br>4. Verify tool names (case-sensitive)</div></div>
+<div class="tc" onclick="tt(this)"><h4 style="color:var(--blue)">Instructions ignored</h4><div class="ts2">Claude doesn't follow them</div><div class="tso">Put critical instructions at the top. Replace vague language with specific checks. Bundle validation scripts for reliability. Add "Take your time, quality > speed" to user prompts.</div></div>
+<div class="tc" onclick="tt(this)"><h4 style="color:var(--green)">Slow responses</h4><div class="ts2">Large context degradation</div><div class="tso">Keep SKILL.md under 5,000 words. Move detail to references/. Reduce active skills if 20-50+ enabled.</div></div>
+</div></div>
+
+<div class="reveal" style="margin-top:2rem"><h3 class="sub">Position your skill</h3>
+<div class="g2">
+<div class="cmp good"><div class="cml">&#10003; Outcomes-focused</div><div class="cmb">"Set up complete project workspaces in seconds instead of 30 minutes of manual setup."</div></div>
+<div class="cmp bad"><div class="cml">&#10007; Features-focused</div><div class="cmb">"A folder containing YAML frontmatter and Markdown that calls MCP server tools."</div></div>
+</div>
+<div class="tip tip-f" style="margin-top:1rem"><span class="tip-i">&#128161;</span><div><strong>The MCP + Skills story:</strong> "Our MCP server gives Claude access to your Linear projects. Our skills teach Claude your sprint planning workflow. Together: AI-powered project management."</div></div>
+</div>
+</section>
+<div class="divider"></div>
+
+<!-- ═══ CH8: RESOURCES ═══ -->
+<section class="S" id="ch8">
+<div class="reveal">
+<div class="S-label">Chapter 08 &mdash; Resources</div>
+<h2>Resources &amp; <em>references</em></h2>
+<p class="S-desc">You've built and shipped a skill. These resources help you keep improving, learn from what others have built, and get help when you're stuck.</p>
+<div class="ch-from">&#8618; Building on the full journey: bookmark these for when you're iterating on your next skill or helping a teammate build theirs.</div>
+<div class="wyl"><span class="wyl-icon">&#128218;</span><div><strong>What you'll learn:</strong> Where to find official docs, example skills to study and adapt, the skill-creator for rapid prototyping, and community support channels.</div></div>
+</div>
+<div class="reveal g2" style="align-items:start">
+<div class="card">
+<h4 style="font-size:15px;font-weight:600;margin-bottom:10px;color:var(--accent)">Official docs</h4>
+<div style="font-size:14px;color:var(--t2);line-height:2.2">&bull; <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview" target="_blank">Agent Skills overview</a><br>&bull; <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices" target="_blank">Best practices guide</a><br>&bull; <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/quickstart" target="_blank">API quickstart</a><br>&bull; <a href="https://platform.claude.com/docs/en/build-with-claude/skills-guide" target="_blank">Using Skills with the API</a><br>&bull; <a href="https://platform.claude.com/docs/en/agent-sdk/skills" target="_blank">Skills in the Agent SDK</a><br>&bull; <a href="https://code.claude.com/docs/en/skills" target="_blank">Skills in Claude Code</a><br>&bull; <a href="https://agentskills.io" target="_blank">Open standard (agentskills.io)</a></div>
+<h4 style="font-size:15px;font-weight:600;margin:16px 0 8px;color:var(--accent)">Blog posts</h4>
+<div style="font-size:14px;color:var(--t2);line-height:2.2">&bull; <a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills" target="_blank">Equipping Agents for the Real World</a><br>&bull; Introducing Agent Skills<br>&bull; How to Create Skills for Claude<br>&bull; Improving Frontend Design through Skills</div>
+</div>
+<div class="card">
+<h4 style="font-size:15px;font-weight:600;margin-bottom:10px;color:var(--teal)">Example skills</h4>
+<div style="font-size:14px;color:var(--t2);line-height:2.2">&bull; <a href="https://github.com/anthropics/skills/tree/main/skills" target="_blank">Browse all skills</a> &mdash; production-ready examples<br>&bull; <a href="https://github.com/anthropics/skills" target="_blank">anthropics/skills</a> repo<br>&bull; <a href="https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction" target="_blank">Agent Skills Cookbook</a><br>&bull; Partner directory: Asana, Atlassian, Canva, Figma, Sentry, Zapier</div>
+<h4 style="font-size:15px;font-weight:600;margin:16px 0 8px;color:var(--teal)">Tools</h4>
+<div style="font-size:14px;color:var(--t2);line-height:2.2">&bull; <a href="https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md" target="_blank"><strong>skill-creator</strong></a> &mdash; the recommended starting point<br>&bull; "Help me build a skill using skill-creator"<br>&bull; "Review this skill and suggest improvements"</div>
+<h4 style="font-size:15px;font-weight:600;margin:16px 0 8px;color:var(--teal)">Support</h4>
+<div style="font-size:14px;color:var(--t2);line-height:2.2">&bull; <a href="https://www.anthropic.com/discord" target="_blank">Claude Developers Discord</a><br>&bull; <a href="https://github.com/anthropics/skills/issues" target="_blank">GitHub Issues</a></div>
+</div>
+</div></section>
+
+<!-- QUICK REF -->
+<button class="qb" onclick="tq()" title="Quick reference">?</button>
+<div class="qp" id="qr">
+<h4>Your journey</h4>
+<div style="display:flex;flex-direction:column;gap:0;margin-bottom:14px">
+<a href="#ch1" style="display:flex;align-items:center;gap:10px;padding:7px 0;text-decoration:none;border-bottom:1px solid var(--bg3)" onclick="tq()"><span style="width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</span><span style="font-size:13px;color:var(--text)">Understand</span><span style="font-size:11px;color:var(--t3);margin-left:auto">the big picture</span></a>
+<a href="#ch2" style="display:flex;align-items:center;gap:10px;padding:7px 0;text-decoration:none;border-bottom:1px solid var(--bg3)" onclick="tq()"><span style="width:22px;height:22px;border-radius:50%;background:var(--teal);color:#fff;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</span><span style="font-size:13px;color:var(--text)">Plan</span><span style="font-size:11px;color:var(--t3);margin-left:auto">use cases &amp; criteria</span></a>
+<a href="#ch3" style="display:flex;align-items:center;gap:10px;padding:7px 0;text-decoration:none;border-bottom:1px solid var(--bg3)" onclick="tq()"><span style="width:22px;height:22px;border-radius:50%;background:var(--purple);color:#fff;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</span><span style="font-size:13px;color:var(--text)">Structure</span><span style="font-size:11px;color:var(--t3);margin-left:auto">naming &amp; YAML</span></a>
+<a href="#ch4" style="display:flex;align-items:center;gap:10px;padding:7px 0;text-decoration:none;border-bottom:1px solid var(--bg3)" onclick="tq()"><span style="width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">4</span><span style="font-size:13px;color:var(--text)">Write</span><span style="font-size:11px;color:var(--t3);margin-left:auto">description &amp; body</span></a>
+<a href="#ch5" style="display:flex;align-items:center;gap:10px;padding:7px 0;text-decoration:none;border-bottom:1px solid var(--bg3)" onclick="tq()"><span style="width:22px;height:22px;border-radius:50%;background:var(--amber);color:#fff;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">5</span><span style="font-size:13px;color:var(--text)">Patterns</span><span style="font-size:11px;color:var(--t3);margin-left:auto">5 proven templates</span></a>
+<a href="#ch6" style="display:flex;align-items:center;gap:10px;padding:7px 0;text-decoration:none;border-bottom:1px solid var(--bg3)" onclick="tq()"><span style="width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">6</span><span style="font-size:13px;color:var(--text)">Test</span><span style="font-size:11px;color:var(--t3);margin-left:auto">validate &amp; iterate</span></a>
+<a href="#ch7" style="display:flex;align-items:center;gap:10px;padding:7px 0;text-decoration:none" onclick="tq()"><span style="width:22px;height:22px;border-radius:50%;background:var(--coral);color:#fff;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">7</span><span style="font-size:13px;color:var(--text)">Ship</span><span style="font-size:11px;color:var(--t3);margin-left:auto">share &amp; troubleshoot</span></a>
+</div>
+
+<h4>Quick links</h4>
+<div class="qi"><a href="https://github.com/anthropics/skills/tree/main/skills" target="_blank">Browse example skills</a></div>
+<div class="qi"><a href="https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md" target="_blank">skill-creator source</a></div>
+<div class="qi"><a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview" target="_blank">Official docs</a></div>
+<div class="qi"><a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices" target="_blank">Best practices</a></div>
+<div class="qi"><a href="https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction" target="_blank">Agent Skills Cookbook</a></div>
+<div class="qi"><a href="https://agentskills.io" target="_blank">agentskills.io standard</a></div>
+<div class="qi"><a href="https://www.anthropic.com/discord" target="_blank">Developer Discord</a></div>
+</div>
+
+<div class="divider"></div>
+<div class="footer"><p>Based on <a href="https://resources.anthropic.com/hubfs/The-Complete-Guide-to-Building-Skill-for-Claude.pdf" target="_blank">The Complete Guide to Building Skills for Claude</a> by Anthropic</p><p style="margin-top:6px"><a href="https://github.com/anthropics/skills" target="_blank">Skills on GitHub</a> &bull; <a href="https://github.com/anthropics/skills/issues" target="_blank">Report issues</a></p></div>
+
+<script>
+const fD=[`<strong>SKILL.md</strong> — YAML frontmatter + Markdown instructions. The <em>only required file</em>. Must be exactly SKILL.md (case-sensitive). No variations accepted (SKILL.MD, skill.md, etc.).`,`<strong>scripts/</strong> — Executable code (Python, Bash). Scripts execute without loading into context, saving tokens. Great for validation, processing, API calls.`,`<strong>references/</strong> — Documentation loaded as needed. API guides, examples, best practices. For large files (>300 lines), include a table of contents.`,`<strong>assets/</strong> — Templates, fonts, icons used in output. These are used in the skill's output, not read for instructions.`];
+function sf(i,e){document.querySelectorAll('.fi').forEach(x=>x.classList.remove('active'));e.classList.add('active');document.getElementById('fdp').innerHTML=fD[i]}
+function td(i){document.querySelectorAll('.dl').forEach((l,j)=>l.classList.toggle('active',j===i))}
+function tp(e){const o=e.classList.contains('open');document.querySelectorAll('.pi').forEach(p=>{p.classList.remove('open');p.querySelector('.pb').style.maxHeight='0'});if(!o){e.classList.add('open');const b=e.querySelector('.pb');b.style.maxHeight=b.scrollHeight+'px'}}
+function tt(e){e.classList.toggle('open')}
+function cc(b){const c=b.closest('.cdb').querySelector('pre').textContent;navigator.clipboard.writeText(c);b.textContent='Copied!';setTimeout(()=>b.textContent='Copy',1500)}
+function tq(){document.getElementById('qr').classList.toggle('open')}
+
+// VALIDATOR
+function loadExample(){document.getElementById('vInput').value=`---\nname: project-sprint-planner\ndescription: Manages Linear project workflows including sprint planning, task creation, and status tracking. Use when user mentions "sprint", "Linear tasks", "project planning", or asks to "create tickets". Do NOT use for general project questions unrelated to Linear.\nlicense: MIT\nmetadata:\n  author: Acme Corp\n  version: 1.0.0\n  mcp-server: linear\n---\n\n# Project Sprint Planner\n\nPlan and execute sprints using Linear via MCP.\n\n# Step 1: Fetch project status\nCall MCP tool: \`linear_get_project\`\nParameters: project_id from user context\n\n# Step 2: Analyze velocity\nReview completed issues from last 2 sprints.\n\n# Step 3: Create sprint tasks\nCall MCP tool: \`linear_create_issue\`\n\n# Examples\n## Example 1: New sprint\nUser says: "Plan next sprint for Project Alpha"\nResult: Sprint created with estimated tasks\n\n# Troubleshooting\n## Error: MCP Connection Failed\nIf you see "Connection refused":\n1. Verify Linear MCP is connected\n2. Confirm API key is valid\n\nConsult \`references/linear-api.md\` for rate limiting guidance.`;validateSkill()}
+function validateSkill(){
+const raw=document.getElementById('vInput').value.trim();if(!raw)return;
+const fmMatch=raw.match(/^---\s*\n([\s\S]*?)\n---/);const hasFM=!!fmMatch;const fm=hasFM?fmMatch[1]:'';const body=hasFM?raw.slice(fmMatch[0].length):'';
+const nameMatch=fm.match(/^name:\s*(.+)$/m);const descMatch=fm.match(/^description:\s*([\s\S]*?)(?=\n\w|\n---|\n$)/m);
+const nameVal=nameMatch?nameMatch[1].trim():'';const descVal=descMatch?descMatch[1].replace(/\n\s+/g,' ').trim():'';
+const hasMeta=/^metadata:/m.test(fm);const fullText=raw.toLowerCase();const bodyLower=body.toLowerCase();
+const hasExamples=/example|user says|scenario/i.test(body);const hasSteps=/(step \d|# step|phase \d|\d\.\s)/i.test(body);
+const hasMCPRef=/(mcp|call mcp)/i.test(fullText);const hasBuiltinRef=/(script|python|bash)/i.test(fullText);
+const p1=[],p2=[],p3=[],p4=[];
+p1.push({ok:hasSteps||hasExamples,label:'Concrete use cases identified',detail:hasSteps?'Step structure detected':'Add steps or examples',auto:true});
+p1.push({ok:hasMCPRef||hasBuiltinRef,label:'Tools identified',detail:hasMCPRef?'MCP references found':'Built-in tool references found',auto:true});
+const kebabOk=nameVal&&/^[a-z0-9]+(-[a-z0-9]+)*$/.test(nameVal);
+p2.push({ok:hasFM,label:'YAML has --- delimiters',detail:hasFM?'Valid':'Missing ---',auto:true});
+p2.push({ok:kebabOk,label:'name: kebab-case',detail:kebabOk?`"${nameVal}" valid`:(nameVal?`"${nameVal}" invalid`:'Missing'),auto:true});
+const descHasWhat=descVal.length>20;const descHasWhen=/(use when|trigger|user (says|asks|mentions)|use for)/i.test(descVal);
+p2.push({ok:descHasWhat&&descHasWhen,label:'description: WHAT + WHEN',detail:(descHasWhen?'Triggers detected':'Add "Use when..."')+(descVal.length>1024?` (${descVal.length} chars — max 1024)`:''),auto:true});
+p2.push({ok:!/<|>/g.test(fm),label:'No XML in frontmatter',detail:/<|>/g.test(fm)?'Found < or > — remove':'Clean',auto:true});
+p2.push({ok:/(run |call |check |verify |create |fetch )/i.test(body),label:'Actionable instructions',detail:'Imperative verbs present',auto:true});
+p2.push({ok:/error|troubleshoot|issue|fail/i.test(body),label:'Error handling',detail:'Troubleshooting section detected',auto:true});
+p2.push({ok:hasExamples,label:'Examples provided',detail:hasExamples?'Detected':'Add examples',auto:true});
+p2.push({ok:!/(claude|anthropic)/i.test(nameVal),label:'No reserved names',detail:'Clean',auto:true});
+const triggerPhrases=(descVal.match(/"[^"]+"/g)||[]).length;
+p3.push({ok:triggerPhrases>=2||descHasWhen,label:'Trigger phrases present',detail:triggerPhrases>=2?`${triggerPhrases} found`:'Consider adding quoted phrases',auto:true});
+const hasNegTrig=/(do not use|don't use|not for)/i.test(descVal);
+p3.push({ok:null,label:'Negative triggers'+(hasNegTrig?' (present)':''),detail:hasNegTrig?'Good — "Do NOT use for..." detected. Helps prevent over-triggering.':'Optional — add "Do NOT use for..." only if you find the skill triggers on unrelated queries after testing.',auto:false});
+p3.push({ok:body.split(/\s+/).length<5000,label:`Size under 5000 words (~${body.split(/\s+/).length})`,detail:'Good',auto:true});
+p4.push({ok:null,label:'Test in real conversations',detail:'Manual check after uploading',auto:false});
+p4.push({ok:null,label:'Monitor triggering',detail:'"When would you use [skill]?"',auto:false});
+p4.push({ok:hasMeta,label:'Version in metadata',detail:hasMeta?'Present':'Add metadata with version',auto:true});
+function rp(c,items){const el=document.getElementById(c);el.innerHTML='';items.forEach(item=>{const a=item.ok===null;const icon=a?'&#9679;':(item.ok?'&#10003;':'&#10007;');const ic=a?'var(--t3)':(item.ok?'var(--green)':'var(--coral)');const bg=a?'transparent':(item.ok?'var(--green-bg)':'var(--coral-bg)');
+el.innerHTML+=`<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 14px;margin-bottom:3px;border-radius:8px;background:${bg}"><span style="color:${ic};font-weight:700;flex-shrink:0;margin-top:1px">${icon}</span><div><div style="font-size:13px;font-weight:500">${item.label}</div><div style="font-size:12px;color:var(--t3);margin-top:1px">${item.detail}</div></div></div>`})}
+rp('vP1',p1);rp('vP2',p2);rp('vP3',p3);rp('vP4',p4);
+const ai=[...p1,...p2,...p3,...p4].filter(i=>i.ok!==null);const passed=ai.filter(i=>i.ok).length;const total=ai.length;const pct=Math.round(passed/total*100);
+document.getElementById('vPct').textContent=pct+'%';document.getElementById('vPct').style.color=pct>=80?'var(--green)':(pct>=50?'var(--amber)':'var(--coral)');
+document.getElementById('vBar').style.width=pct+'%';document.getElementById('vBar').style.background=pct>=80?'var(--green)':(pct>=50?'var(--amber)':'var(--coral)');
+document.getElementById('vScore').textContent=passed+'/'+total+' passed';document.getElementById('vResults').style.display='block';
+const fails=ai.filter(i=>!i.ok);if(fails.length>0){const r=document.getElementById('vRecs');r.style.display='block';r.innerHTML='<strong style="color:var(--amber)">Top fixes:</strong><br>'+fails.slice(0,3).map((f,i)=>`${i+1}. ${f.detail}`).join('<br>');}else{document.getElementById('vRecs').style.display='none';}
+document.getElementById('vResults').scrollIntoView({behavior:'smooth',block:'start'})}
+
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.08});document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+let ly=0;window.addEventListener('scroll',()=>{const y=window.scrollY;const h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('np').style.width=(y/h*100)+'%';const n=document.getElementById('topnav');if(y>ly&&y>200)n.classList.add('hide');else n.classList.remove('hide');ly=y});
+</script>
+</body>
+</html>

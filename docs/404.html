@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Page not found — AI Learning Guides</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAFAF8; --bg3: #E8E6E1;
+  --text: #1A1A18; --t2: #4A4A45; --t3: #8A8A82;
+  --accent: #C25B28; --accent2: #A84B1F;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'Source Sans 3', -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--text); font-family: var(--sans);
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 2rem;
+}
+::selection { background: var(--accent); color: #fff; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.code {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+h1 {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400;
+  margin-bottom: 1rem;
+}
+p { color: var(--t2); font-size: 1.05rem; line-height: 1.8; margin-bottom: 2rem; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 28px; border-radius: 8px;
+  font-size: 15px; font-weight: 500;
+  background: var(--accent); color: #fff;
+  text-decoration: none; transition: all 0.2s;
+  font-family: var(--sans);
+}
+.btn:hover { background: var(--accent2); transform: translateY(-1px); text-decoration: none; }
+</style>
+</head>
+<body>
+<div>
+  <div class="code">404</div>
+  <h1>Page not found</h1>
+  <p>The page you're looking for doesn't exist or has been moved.</p>
+  <a href="/ai-coding/" class="btn">Back to guides</a>
+</div>
+</body>
+</html>
